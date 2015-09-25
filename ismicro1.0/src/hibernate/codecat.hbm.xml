@@ -1,0 +1,99 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+
+<hibernate-mapping package="hu.ismicro.commons.prefs">
+
+	<class name="hu.ismicro.commons.codecat.Property" table="sys_codecat" mutable="true" lazy="true">
+		<id name="Oid" type="long">
+			<column name="oid" sql-type="numeric(9)"/>
+			<generator class="sequence">
+			    <param name="sequence">seq_sys_codecat</param>
+			</generator>
+		</id>
+		<property name="Owner" type="string" not-null="true">
+			<column name="property_owner" sql-type="varchar(80)"/>
+		</property>
+		<property name="Name" type="string" not-null="true">
+			<column name="property_name" sql-type="varchar(80)"/>
+		</property>
+		<property name="Length" type="int" not-null="true">
+			<column name="property_length" sql-type="numeric(6)"/>
+		</property>
+		<property name="Precision" type="int" not-null="false">
+			<column name="property_precision" sql-type="numeric(6)"/>
+		</property>
+		<property name="Type" type="string" not-null="true">
+			<column name="property_type" sql-type="varchar(128)"/>
+		</property>
+		<set name="PropertyValuesInternal" inverse="true">
+		    <key column="sys_codecat_oid"/>
+		    <one-to-many class="hu.ismicro.commons.codecat.PropertyValue"/>
+		</set>
+	</class>
+
+	<class name="hu.ismicro.commons.codecat.PropertyAttribute" table="sys_codecat_attrs" mutable="true" lazy="true">
+	    <composite-id>
+			<key-property name="EntityPrimaryKey" type="long">
+				<column name="sys_codecat_oid" sql-type="numeric(9)" not-null="true"/>
+			</key-property>
+			<key-property name="AttributeName" type="string">
+				<column name="aname" sql-type="varchar(80)" not-null="true"/>
+			</key-property>
+	    </composite-id>
+	    
+		<property name="AttributeCreated" type="date" not-null="true">
+			<column name="acreated" sql-type="date"/>
+		</property>
+		<property name="AttributeModified" type="date" not-null="true">
+			<column name="amodified" sql-type="date"/>
+		</property>
+		<property name="AttributeType" type="string" not-null="false">
+			<column name="atype" sql-type="varchar(128)"/>
+		</property>
+		<property name="AttributeValue" type="text" not-null="false">
+			<column name="avalue" sql-type="clob"/>
+		</property>
+	</class>
+
+	<class name="hu.ismicro.commons.codecat.PropertyValue" table="sys_codeval" mutable="true" lazy="true">
+		<id name="Oid" type="long">
+			<column name="oid" sql-type="numeric(9)"/>
+			<generator class="sequence">
+			    <param name="sequence">seq_sys_codeval</param>
+			</generator>
+		</id>
+		<property name="Value" type="string" not-null="true">
+			<column name="code_value" sql-type="varchar(80)"/>
+		</property>
+		<many-to-one name="Property" class="hu.ismicro.commons.codecat.Property">
+			<column name="sys_codecat_oid" sql-type="numeric(9)"/>
+		</many-to-one>
+	</class>
+
+	<class name="hu.ismicro.commons.codecat.PropertyValueAttribute" table="sys_codeval_attrs" mutable="true" lazy="true">
+	    <composite-id>
+			<key-property name="EntityPrimaryKey" type="long">
+				<column name="sys_codeval_oid" sql-type="numeric(9)" not-null="true"/>
+			</key-property>
+			<key-property name="AttributeName" type="string">
+				<column name="aname" sql-type="varchar(80)" not-null="true"/>
+			</key-property>
+	    </composite-id>
+
+		<property name="AttributeCreated" type="date" not-null="true">
+			<column name="acreated" sql-type="date"/>
+		</property>
+		<property name="AttributeModified" type="date" not-null="true">
+			<column name="amodified" sql-type="date"/>
+		</property>
+		<property name="AttributeType" type="string" not-null="false">
+			<column name="atype" sql-type="varchar(128)"/>
+		</property>
+		<property name="AttributeValue" type="text" not-null="false">
+			<column name="avalue" sql-type="clob"/>
+		</property>
+	</class>
+
+</hibernate-mapping>
